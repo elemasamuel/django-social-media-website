@@ -1,0 +1,519 @@
+{% load static %} {% load humanize %}
+<div class="main-wrapper">
+    <!-- navigation top-->
+    <div class="nav-header bg-white shadow-xs border-0">
+      <div class="nav-top">
+        <a href="{% url 'index' %}"
+          ><i class="feather-zap text-success display1-size me-2 ms-0"></i
+          ><span
+            class="d-inline-block fredoka-font ls-3 fw-600 text-current font-xxl logo-text mb-0"
+            >Sociala.
+          </span>
+        </a>
+        <a href="#" class="mob-menu ms-auto me-2 chat-active-btn"
+          ><i
+            class="feather-message-circle text-grey-900 font-sm btn-round-md bg-greylight"
+          ></i
+        ></a>
+        <a href="#" class="me-2 menu-search-icon mob-menu"
+          ><i
+            class="feather-search text-grey-900 font-sm btn-round-md bg-greylight"
+          ></i
+        ></a>
+        <button class="nav-menu me-0 ms-2"></button>
+      </div>
+
+      <form action="#" class="float-left header-search">
+        <div class="form-group mb-0 icon-input">
+          <i class="feather-search font-sm text-grey-400"></i>
+          <input
+            type="text"
+            placeholder="Start typing to search.."
+            class="bg-grey border-0 lh-32 pt-2 pb-2 ps-5 pe-3 font-xssss fw-500 rounded-xl w350 theme-dark-bg"
+          />
+        </div>
+      </form>
+
+      <!-- right chat -->
+      <div class="right-chat nav-wrap mt-2 right-scroll-bar">
+        <div
+          class="middle-sidebar-right-content bg-white shadow-xss rounded-xxl"
+        >
+         
+
+          <div class="section full pe-3 ps-4 pt-4 position-relative feed-body">
+            <h4 class="font-xsssss text-grey-500 text-uppercase fw-700 ls-3">
+              CHAT
+            </h4>
+            {% for message in messages %}
+            <ul class="list-group list-group-flush">
+              <li
+                class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center"
+              >
+                <figure class="avatar float-left mb-0 me-2">
+                  {% if message.user.profile.picture %}
+                  <img
+                    src="{{message.user.profile.picture.url}}"
+                    alt="image"
+                    class="w35"
+                  />
+                  {% else %}
+                  <img
+                    src="{% static 'images/profile-4.png' %}"
+                    alt="image"
+                    class="w35"
+                  />
+                  {% endif %}
+                </figure>
+                <h3 class="fw-700 mb-0 mt-0">
+                  <a
+                    class="font-xssss text-grey-600 d-block text-dark"
+                    href="{% url 'directs' message.user.username %}"
+                    >{{message.user.profile.first_name}} {{message.user.profile.last_name}}</a
+                  >
+                </h3>
+                {% if message.unread %}
+                <span
+                  class="badge badge-primary text-white badge-pill fw-500 mt-0"
+                  >{{message.unread}}</span
+                >{% endif %}
+            </ul>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- right chat -->
+
+      <a
+        href="#"
+        class="p-2 text-center ms-auto menu-icon"
+        id="dropdownMenu3"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+        data-bs-toggle="dropdown"
+        >{% if count_notifications %}
+        <span class="dot-count bg-warning"></span
+        >{% endif %}
+        <i class="feather-bell font-xl text-current"></i
+      ></a>
+      
+      <div
+        class="dropdown-menu dropdown-menu-end p-4 rounded-3 border-0 shadow-lg"
+        aria-labelledby="dropdownMenu3"
+      >
+        <h4 class="fw-700 font-xss mb-4">Notification</h4>
+        {% if notifications %}
+        {% for notification in notifications %} 
+        {% if forloop.counter <= 7 %}
+        {% if notification.notification_type == 1 %}
+        <a
+          href="{% url 'postcomment' notification.post.id %}"
+        >
+          <div class="card bg-transparent-card w-100 border-0 ps-5 mb-3">
+          {% if notification.sender.profile.picture %}
+            <img
+              src="{{notification.sender.profile.picture.url}}"
+              alt="user"
+              class="w40 position-absolute left-0"
+            />
+            {% else %}
+            <img
+              src="{% static 'images/profile-4.png' %}"
+              alt="user"
+              class="w40 position-absolute left-0"
+            />
+            {% endif %}
+            <h5 class="font-xsss text-grey-900 mb-1 mt-0 fw-700 d-block">
+              {% if notification.sender.profile != user.profile %}
+              {{notification.sender.profile.first_name}} {{notification.sender.profile.last_name}}
+              {% else %}
+              You
+              {% endif %}
+              <span class="text-grey-400 font-xsssss fw-600 float-right mt-1">
+                {{notification.date|naturaltime}}</span
+              >
+            </h5>
+            <h6 class="text-grey-500 fw-500 font-xssss lh-4">
+              liked your post
+            </h6>
+          </div>
+        </a>
+        {% endif %} 
+
+        {% if notification.notification_type == 3 %}
+        <a
+          href="{% url 'profile' notification.user.username %}"
+        >
+          <div class="card bg-transparent-card w-100 border-0 ps-5 mb-3">
+            {% if notification.sender.profile.picture %}
+            <img
+              src="{{notification.sender.profile.picture.url}}"
+              alt="user"
+              class="w40 position-absolute left-0"
+            />
+            {% else %}
+            <img
+              src="{% static 'images/profile-4.png' %}"
+              alt="user"
+              class="w40 position-absolute left-0"
+            />
+            {% endif %}
+            <h5 class="font-xsss text-grey-900 mb-1 mt-0 fw-700 d-block">
+              {% if notification.sender.profile != user.profile %}
+              {{notification.sender.profile.first_name}} {{notification.sender.profile.last_name}}
+              {% else %}
+              You
+              {% endif %}
+              <span class="text-grey-400 font-xsssss fw-600 float-right mt-1">
+                {{notification.date|naturaltime}}</span
+              >
+            </h5>
+            <h6 class="text-grey-500 fw-500 font-xssss lh-4">
+              followed you
+            </h6>
+          </div>
+        </a>
+        {% endif %}
+
+        {% if notification.notification_type == 2 %}
+        <a
+          href="{% url 'postcomment' notification.post.id %}"
+        >
+          <div class="card bg-transparent-card w-100 border-0 ps-5 mb-3">
+            {% if notification.sender.profile.picture %}
+            <img
+              src="{{notification.sender.profile.picture.url}}"
+              alt="user"
+              class="w40 position-absolute left-0"
+            />
+            {% else %}
+            <img
+              src="{% static 'images/profile-4.png' %}"
+              alt="user"
+              class="w40 position-absolute left-0"
+            />
+            {% endif %}
+            <h5 class="font-xsss text-grey-900 mb-1 mt-0 fw-700 d-block">
+              {% if notification.sender.profile != user.profile %}
+              {{notification.sender.profile.first_name}} {{notification.sender.profile.last_name}}
+              {% else %}
+              You
+              {% endif %}
+              <span class="text-grey-400 font-xsssss fw-600 float-right mt-1">
+                {{notification.date|naturaltime}}</span
+              >
+            </h5>
+            <h6 class="text-grey-500 fw-500 font-xssss lh-4">
+              commented on your post
+            </h6>
+          </div>
+        </a>
+        {% endif %}
+
+        {% endif %}
+        {% endfor %} {% endif %}
+      </div>
+      <a href="#" class="p-2 text-center ms-3 menu-icon chat-active-btn"
+        >{% if directs_count %}
+        <span class="dot-count bg-warning"></span
+        >{% endif %}
+        <i class="feather-message-square font-xl text-current"></i
+      ></a>
+      
+      <!-- <div
+        class="p-2 text-center ms-3 position-relative dropdown-menu-icon menu-icon cursor-pointer"
+      >
+        <i
+          class="feather-settings animation-spin d-inline-block font-xl text-current"
+        ></i>
+        <div class="dropdown-menu-settings switchcolor-wrap">
+          <h4 class="fw-700 font-sm mb-4">Settings</h4>
+          <h6 class="font-xssss text-grey-500 fw-700 mb-3 d-block">
+            Choose Color Theme
+          </h6>
+          <ul>
+            <li>
+              <label class="item-radio item-content">
+                <input
+                  type="radio"
+                  name="color-radio"
+                  value="red"
+                  checked=""
+                /><i class="ti-check"></i>
+                <span
+                  class="circle-color bg-red"
+                  style="background-color: #ff3b30"
+                ></span>
+              </label>
+            </li>
+            <li>
+              <label class="item-radio item-content">
+                <input type="radio" name="color-radio" value="green" /><i
+                  class="ti-check"
+                ></i>
+                <span
+                  class="circle-color bg-green"
+                  style="background-color: #4cd964"
+                ></span>
+              </label>
+            </li>
+            <li>
+              <label class="item-radio item-content">
+                <input
+                  type="radio"
+                  name="color-radio"
+                  value="blue"
+                  checked=""
+                /><i class="ti-check"></i>
+                <span
+                  class="circle-color bg-blue"
+                  style="background-color: #132977"
+                ></span>
+              </label>
+            </li>
+            <li>
+              <label class="item-radio item-content">
+                <input type="radio" name="color-radio" value="pink" /><i
+                  class="ti-check"
+                ></i>
+                <span
+                  class="circle-color bg-pink"
+                  style="background-color: #ff2d55"
+                ></span>
+              </label>
+            </li>
+            <li>
+              <label class="item-radio item-content">
+                <input type="radio" name="color-radio" value="yellow" /><i
+                  class="ti-check"
+                ></i>
+                <span
+                  class="circle-color bg-yellow"
+                  style="background-color: #ffcc00"
+                ></span>
+              </label>
+            </li>
+            <li>
+              <label class="item-radio item-content">
+                <input type="radio" name="color-radio" value="orange" /><i
+                  class="ti-check"
+                ></i>
+                <span
+                  class="circle-color bg-orange"
+                  style="background-color: #ff9500"
+                ></span>
+              </label>
+            </li>
+            <li>
+              <label class="item-radio item-content">
+                <input type="radio" name="color-radio" value="gray" /><i
+                  class="ti-check"
+                ></i>
+                <span
+                  class="circle-color bg-gray"
+                  style="background-color: #8e8e93"
+                ></span>
+              </label>
+            </li>
+
+            <li>
+              <label class="item-radio item-content">
+                <input type="radio" name="color-radio" value="brown" /><i
+                  class="ti-check"
+                ></i>
+                <span
+                  class="circle-color bg-brown"
+                  style="background-color: #d2691e"
+                ></span>
+              </label>
+            </li>
+            <li>
+              <label class="item-radio item-content">
+                <input type="radio" name="color-radio" value="darkgreen" /><i
+                  class="ti-check"
+                ></i>
+                <span
+                  class="circle-color bg-darkgreen"
+                  style="background-color: #228b22"
+                ></span>
+              </label>
+            </li>
+            <li>
+              <label class="item-radio item-content">
+                <input type="radio" name="color-radio" value="deeppink" /><i
+                  class="ti-check"
+                ></i>
+                <span
+                  class="circle-color bg-deeppink"
+                  style="background-color: #ffc0cb"
+                ></span>
+              </label>
+            </li>
+            <li>
+              <label class="item-radio item-content">
+                <input type="radio" name="color-radio" value="cadetblue" /><i
+                  class="ti-check"
+                ></i>
+                <span
+                  class="circle-color bg-cadetblue"
+                  style="background-color: #5f9ea0"
+                ></span>
+              </label>
+            </li>
+            <li>
+              <label class="item-radio item-content">
+                <input type="radio" name="color-radio" value="darkorchid" /><i
+                  class="ti-check"
+                ></i>
+                <span
+                  class="circle-color bg-darkorchid"
+                  style="background-color: #9932cc"
+                ></span>
+              </label>
+            </li>
+          </ul>
+
+          <div class="card bg-transparent-card border-0 d-block mt-3">
+            <h4 class="d-inline font-xssss mont-font fw-700">
+              Header Background
+            </h4>
+            <div class="d-inline float-right mt-1">
+              <label class="toggle toggle-menu-color"
+                ><input type="checkbox" /><span class="toggle-icon"></span
+              ></label>
+            </div>
+          </div>
+          <div class="card bg-transparent-card border-0 d-block mt-3">
+            <h4 class="d-inline font-xssss mont-font fw-700">
+              Menu Position
+            </h4>
+            <div class="d-inline float-right mt-1">
+              <label class="toggle toggle-menu"
+                ><input type="checkbox" /><span class="toggle-icon"></span
+              ></label>
+            </div>
+          </div>
+          <div class="card bg-transparent-card border-0 d-block mt-3">
+            <h4 class="d-inline font-xssss mont-font fw-700">Dark Mode</h4>
+            <div class="d-inline float-right mt-1">
+              <label class="toggle toggle-dark"
+                ><input type="checkbox" /><span class="toggle-icon"></span
+              ></label>
+            </div>
+          </div>
+        </div>
+      </div> -->
+      {% if user.profile.picture %} 
+      <a href="{% url 'profile' request.user %}" class="p-0 ms-3 menu-icon"
+        ><img
+          src="{{user.profile.picture.url}}" 
+          alt="user"
+          class="w40 mt--1"
+      /></a>
+      {% else %}
+      <a href="{% url 'profile' request.user %}" class="p-0 ms-3 menu-icon"
+        ><img
+          src="{% static 'images/profile-4.png' %}" 
+          alt="user"
+          class="w40 mt--1"
+      /></a>
+      {% endif %}
+    </div>
+    <!-- navigation top -->
+
+    <!-- navigation left -->
+    <nav class="navigation scroll-bar">
+      <div class="container ps-0 pe-0">
+        <div class="nav-content">
+          <div
+            class="nav-wrap bg-white bg-transparent-card rounded-xxl shadow-xss pt-3 pb-1 mb-2 mt-2"
+          >
+            <div class="nav-caption fw-600 font-xssss text-grey-500">
+              <span>New </span>Feeds
+            </div>
+            <ul class="mb-1 top-content">
+              <li class="logo d-none d-xl-block d-lg-block"></li>
+              <li>
+                <a href="{% url 'index' %}" class="nav-content-bttn open-font"
+                  ><i
+                    class="feather-tv btn-round-md bg-blue-gradiant me-3"
+                  ></i
+                  ><span>Newsfeed</span></a
+                >
+              </li>
+              <li>
+                <a
+                  href="{% url 'user-search' %}"
+                  class="nav-content-bttn open-font"
+                  ><i
+                    class="feather-search btn-round-md bg-red-gradiant me-3"
+                  ></i
+                  ><span>Search Accounts</span></a
+                >
+              </li>
+              <li>
+                <a
+                  href="{% url 'show-notifications' %}"
+                  class="nav-content-bttn open-font"
+                  ><i
+                    class="feather-bell btn-round-md bg-gold-gradiant me-3"
+                  ></i
+                  ><span>Notifications</span>
+                  {% if count_notifications %}
+                  <span class="circle-count bg-warning mt-0">{{count_notifications}}</span>
+                  {% endif %}
+                  </a>
+              </li>
+              <li>
+                <a href="{% url 'profile' request.user %}" class="nav-content-bttn open-font"
+                  ><i
+                    class="feather-user btn-round-md bg-primary-gradiant me-3"
+                  ></i
+                  ><span>Profile </span></a
+                >
+              </li>
+            </ul>
+          </div>
+
+          
+          <div
+            class="nav-wrap bg-white bg-transparent-card rounded-xxl shadow-xss pt-3 pb-1"
+          >
+            <div class="nav-caption fw-600 font-xssss text-grey-500">
+              <span></span> Account
+            </div>
+            <ul class="mb-1">
+              <li class="logo d-none d-xl-block d-lg-block"></li>
+              <li>
+                <a
+                  href="{% url 'settings' %}"
+                  class="nav-content-bttn open-font h-auto pt-2 pb-2"
+                  ><i class="font-sm feather-settings me-3 text-grey-500"></i
+                  ><span>Settings</span></a
+                >
+              </li>
+              <li>
+                <a
+                  href="{% url 'inbox' %}"
+                  class="nav-content-bttn open-font h-auto pt-2 pb-2"
+                  ><i
+                    class="font-sm feather-message-square me-3 text-grey-500"
+                  ></i
+                  ><span>Chat</span
+                  >{% if directs_count %}
+                  <span class="circle-count bg-warning mt-0">{{directs_count}}</span>
+                  {% endif %}
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+    
+    
+    <!-- navigation left -->
+    
+    

@@ -1,0 +1,87 @@
+{% extends 'account/base.html' %} 
+{% load static %} {% load widget_tweaks %} 
+{% block content %} {% include 'account/nav-bar.html' %}
+
+<!-- main content -->
+<div class="main-content right-chat-active">
+  <div class="middle-sidebar-bottom">
+    <div
+      class="middle-sidebar-left pe-0 ps-lg-3 ms-0 me-0"
+      style="max-width: 100%"
+    >
+      <div class="row">
+        <div class="col-lg-12 position-relative">
+          <div
+            class="chat-wrapper pt-0 w-100 position-relative scroll-bar bg-white theme-dark-bg"
+          >
+            <div class="chat-body p-3">
+              <div class="messages-content pb-5">
+                {% for direct in directs %}
+                {% if direct.sender != direct.recipient %}
+                <div class="message-item outgoing-message">
+                  <div class="message-user">
+                    <div>
+                      <div class="time">
+                        {{direct.date|date:'N d G:i'}}
+                          <!-- <i class="ti-double-check text-info"></i> -->
+                      </div>
+                    </div>
+                  </div>
+                  <div class="message-wrap">
+                    {{direct.body}}
+                  </div>
+                </div>
+                {% endif %}
+                {% if direct.sender == direct.recipient %}
+                <div class="message-item">
+                  <div class="message-user">
+                    <figure class="avatar">
+                        {% if direct.sender.profile.picture %}
+                        <img src="{{direct.sender.profile.picture.url}}" alt="image" />
+                        {% else %}
+                        <img src="{% static 'images/profile-4.png' %}" alt="image" />
+                        {% endif %}
+                    </figure>
+                    <div>
+                      <h5>{{direct.sender.profile.first_name}} {{direct.sender.profile.last_name}}</h5>
+                      <div class="time">{{direct.date|date:'N d G:i'}}</div>
+                    </div>
+                  </div>
+                  <div class="message-wrap">
+                    {{direct.body}}
+                  </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+                
+                <div class="clearfix"></div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="chat-bottom dark-bg p-3 shadow-none theme-dark-bg"
+            style="width: 98%"
+          >
+            <form id="myform" class="chat-form" action="{% url 'send-direct' %}" method="POST">
+                {% csrf_token %}
+              <button class="bg-grey float-left">
+                <i class="ti-microphone text-grey-600"></i>
+              </button>
+              <div>
+                <input type="hidden" name="to_user" value="{{active_direct}}" />
+                <input id="id_body" class="bg-grey float-left form-group text-grey-900" name="body" type="text" placeholder="Start typing.." />
+              </div>
+              <button class="bg-current"  type="submit" name="action">
+                <i class="ti-arrow-right text-white"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- main content -->
+
+
+{% endblock %}

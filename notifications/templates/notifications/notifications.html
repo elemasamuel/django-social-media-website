@@ -1,0 +1,207 @@
+{% extends 'account/base.html' %} {% load static %} {% block content %} 
+{% include 'account/nav-bar.html' %} {% load humanize %}
+<!-- main content -->
+<div class="main-content right-chat-active">
+  <div class="middle-sidebar-bottom">
+    <div class="middle-sidebar-left pe-0">
+      <div class="row">
+        <div class="col-xl-12">
+          <div
+            class="chat-wrapper p-3 w-100 position-relative scroll-bar bg-white theme-dark-bg"
+          >
+            <h2
+              class="fw-700 mb-4 mt-2 font-md text-grey-900 d-flex align-items-center"
+            >
+              Notification {% if count_notifications %}
+              <span
+                class="circle-count bg-warning text-white font-xsssss rounded-3 ms-2 ls-3 fw-600 p-2 mt-0"
+              >
+                {{count_notifications}}
+              </span>
+              {% endif %}
+            </h2>
+
+            <ul class="notification-box">
+              <!-- Begin: Like Notification -->
+              {% for notification in notifications %} 
+              {% if notification.notification_type == 1 %}
+              <li>
+                <a
+                  href="{% url 'postcomment' notification.post.id %}"
+                  class="d-flex align-items-center p-3 rounded-3 bg-lightblue theme-light-bg"
+                >
+                  {% if notification.sender.profile.picture %}
+                  <img
+                    src="{{notification.sender.profile.picture.url}}"
+                    alt="user"
+                    class="w45 me-3"
+                  />
+                  {% else %}
+                  <img
+                    src="{% static 'images/profile-4.png' %}"
+                    alt="user"
+                    class="w45 me-3"
+                  />
+                  {% endif %}
+                  <i
+                    class="feather-thumbs-up text-white bg-primary-gradiant me-2 font-xssss notification-react"
+                  ></i>
+                  <h6
+                    class="font-xssss text-grey-900 text-grey-900 mb-0 mt-0 fw-500 lh-20"
+                  >
+                    <strong>
+                      {% if notification.sender.profile != user.profile %}
+                      {{notification.sender.profile.first_name}} {{notification.sender.profile.last_name}}
+                      {% else %} You {% endif %}
+                    </strong>
+                    liked your post
+                    {% for cont in notification.post.content.all %} 
+                    <img
+                      style="float: right; position: relative;"
+                      src="{{cont.file.url}}"
+                      alt="user"
+                      class="w45 me-3"
+                    />
+                    {% endfor %}
+                    <span
+                      class="d-block text-grey-500 font-xssss fw-600 mb-0 mt-0 0l-auto"
+                    >
+                      {{notification.date|naturaltime}}
+                    </span>
+                  </h6>
+                  <a
+                    href="{% url 'delete-notification' notification.id %}"
+                    class="d-flex align-items-center p-3 rounded-3 bg-lightblue theme-light-bg"
+                    style="margin-bottom: 1vw;"
+                  >
+                    <i
+                      class="feather-trash-2 text-grey-500 font-xs ms-auto"
+                    ></i>
+                  </a>
+                </a>
+              </li>
+              {% endif %}
+              <!-- End: Like Notification -->
+
+              <!-- Begin: Follow Notification -->
+              {% if notification.notification_type == 3 %}
+              <li>
+                <a
+                  href="{% url 'profile' notification.user.username %}"
+                  class="d-flex align-items-center p-3 rounded-3 bg-lightblue theme-light-bg"
+                >
+                  {% if notification.sender.profile.picture %}
+                  <img
+                    src="{{notification.sender.profile.picture.url}}"
+                    alt="user"
+                    class="w45 me-3"
+                  />
+                  {% else %}
+                  <img
+                    src="{% static 'images/profile-4.png' %}"
+                    alt="user"
+                    class="w45 me-3"
+                  />
+                  {% endif %}
+                  <i
+                    class="feather-users text-white bg-mini-gradiant me-2 font-xssss notification-react"
+                  ></i>
+                  <h6
+                    class="font-xssss text-grey-900 text-grey-900 mb-0 mt-0 fw-500 lh-20"
+                  >
+                    <strong>
+                      {% if notification.sender.profile != user.profile %}
+                      {{notification.sender.profile.first_name}} {{notification.sender.profile.last_name}}
+                      {% else %} You {% endif %}
+                    </strong>
+                    followed you
+                    <span
+                      class="d-block text-grey-500 font-xssss fw-600 mb-0 mt-0 0l-auto"
+                    >
+                      {{notification.date|naturaltime}}
+                    </span>
+                  </h6>
+                  <a
+                    href="{% url 'delete-notification' notification.id %}"
+                    class="d-flex align-items-center p-3 rounded-3 bg-lightblue theme-light-bg"
+                    style="margin-bottom: 1vw;"
+                  >
+                    <i
+                      class="feather-trash-2 text-grey-500 font-xs ms-auto"
+                    ></i>
+                  </a>
+                </a>
+              </li>
+              {% endif %}
+              <!-- End: Follow Notification -->
+
+              <!-- Begin: Comment Notification -->
+              {% if notification.notification_type == 2 %}
+              <li>
+                <a
+                  href="{% url 'postcomment' notification.post.id %}"
+                  class="d-flex align-items-center p-3 rounded-3 bg-lightblue theme-light-bg"
+                >
+                  {% if notification.sender.profile.picture %}
+                  <img
+                    src="{{notification.sender.profile.picture.url}}"
+                    alt="user"
+                    class="w45 me-3"
+                  />
+                  {% else %}
+                  <img
+                    src="{% static 'images/profile-4.png' %}"
+                    alt="user"
+                    class="w45 me-3"
+                  />
+                  {% endif %}
+                  <i
+                    class="feather-message-square text-white bg-mini-gradiant me-2 font-xssss notification-react"
+                  ></i>
+                  <h6
+                    class="font-xssss text-grey-900 text-grey-900 mb-0 mt-0 fw-500 lh-20"
+                  >
+                    <strong>
+                      {% if notification.sender.profile != user.profile %}
+                      {{notification.sender.profile.first_name}} {{notification.sender.profile.last_name}}
+                      {% else %} You {% endif %}
+                    </strong>
+                    commented
+                    <strong>"{{notification.text_preview}}"</strong>
+                    on your post
+                    <img
+                      style="float: right; position: relative;"
+                      src="{{notification.post.picture.url}}"
+                      alt="user"
+                      class="w45 me-3"
+                    />
+                    <span
+                      class="d-block text-grey-500 font-xssss fw-600 mb-0 mt-0 0l-auto"
+                    >
+                      {{notification.date|naturaltime}}
+                    </span>
+                  </h6>
+                  <a
+                    href="{% url 'delete-notification' notification.id %}"
+                    class="d-flex align-items-center p-3 rounded-3 bg-lightblue theme-light-bg"
+                    style="margin-bottom: 1vw;"
+                  >
+                    <i
+                      class="feather-trash-2 text-grey-500 font-xs ms-auto"
+                    ></i>
+                  </a>
+                </a>
+              </li>
+              {% endif %}
+              <!-- End: Comment Notification -->
+
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- main content -->
+{% endblock %}

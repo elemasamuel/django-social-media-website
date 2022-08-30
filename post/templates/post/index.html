@@ -1,0 +1,604 @@
+{% extends 'account/base.html' %} {% load static %} {% load widget_tweaks %} 
+{% block content %} {% include 'account/nav-bar.html' %}
+<!-- main content -->
+<div class="main-content right-chat-active">
+  <div class="middle-sidebar-bottom">
+    <div class="middle-sidebar-left">
+      
+      <div class="row feed-body">
+        <div class="col-xl-8 col-xxl-9 col-lg-8">
+          <div
+            class="card w-100 shadow-none bg-transparent bg-transparent-card border-0 p-0 mb-0"
+          >
+            <div
+              class="owl-carousel category-card owl-theme overflow-hidden nav-none"
+            >
+              <div class="item">
+                <div
+                  class="card w125 h200 d-block border-0 shadow-none rounded-xxxl bg-dark overflow-hidden mb-3 mt-3"
+                >
+                  <div
+                    class="card-body d-block p-3 w-100 position-absolute bottom-0 text-center"
+                  >
+                    <form method="post" action="" enctype="multipart/form-data">
+                      {% csrf_token %}
+                      <span class="btn-round-lg bg-white">
+                        {% render_field story_form.content class="btn-round-lg bg-white" %}
+                        <i class="feather-plus font-lg"></i>
+                      </span>
+                      <div class="clearfix"></div>
+                      <button
+                      type="submit"
+                      style="
+                        background-color: transparent;
+                        background-repeat: no-repeat;
+                        border: none;
+                        padding: 7px;
+                        background-clip: content-box, padding-box;
+                        box-shadow: inset 0 0 0 3px rgb(102, 102, 102);
+                        cursor: pointer;
+                        overflow: hidden;
+                        outline: none;
+                      "
+                        class="fw-700 position-relative z-index-1 ls-1 font-xssss text-white mt-2 mb-1"
+                      >
+                        Add Story
+                    </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              {% for story in stories %}
+              <div class="item">
+                <div
+                  {% for story in story.story.all %}
+                  data-bs-toggle="modal"
+                  data-bs-target="#Modalstory"
+                  class="card w125 h200 d-block border-0 shadow-xss rounded-xxxl bg-gradiant-bottom overflow-hidden cursor-pointer mb-3 mt-3"
+                  style='background-image: url("{{story.content.url}}"); object-fit: cover; height: 20px;'
+                  {% endfor %}
+                > 
+                  {% for story in story.story.all %}
+                  {% if story.content.name|slice:"-3:" != "jpg" and story.content.name|slice:"-3:" != "png" %}
+                  <video autoplay loop class="float-right h-300">
+                    <source
+                      src="{{story.content.url}}"
+                      type="video/mp4"
+                    />
+                  </video>
+                  {% endif %} {% endfor %}
+                  <div
+                    class="card-body d-block p-3 w-100 position-absolute bottom-0 text-center"
+                  >
+                    <a href="#" name="{{story.id}}">
+                      <figure
+                        class="avatar ms-auto me-auto mb-0 position-relative w50 z-index-1"
+                      >
+                        {% if story.following.profile.picture %}
+                        <img
+                          src="{{story.following.profile.picture.url}}"
+                          alt="image"
+                          class="float-right p-0 bg-white rounded-circle w-100 shadow-xss"
+                        />
+                        {% else %}
+                        <img
+                          src="{% static 'images/profile-4.png' %}"
+                          alt="image"
+                          class="float-right p-0 bg-white rounded-circle w-100 shadow-xss"
+                        />
+                        {% endif %}
+                      </figure>
+                      <div class="clearfix"></div>
+                      <h4
+                        class="fw-600 position-relative z-index-1 ls-1 font-xssss text-white mt-2 mb-1"
+                      >{% if story.following.profile == user.profile %} My Story {% else %}
+                        {{story.following.profile.first_name}} {{story.following.profile.last_name}} {% endif %}
+                      </h4>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          <form method="post" action="" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div
+              class="card w-100 shadow-xss rounded-xxl border-0 ps-4 pt-4 pe-4 pb-3 mb-3"
+            >
+              <div class="card-body p-0 mt-3 position-relative">
+                <figure class="avatar position-absolute ms-2 mt-1 top-5">
+                  {% if user.profile.picture %}
+                  <img
+                    src="{{user.profile.picture.url}}"
+                    alt="image"
+                    class="shadow-sm rounded-circle w30"
+                  />
+                  {% else %}
+                  <img
+                    src="{% static 'images/profile-4.png' %}"
+                    alt="image"
+                    class="shadow-sm rounded-circle w30"
+                  />
+                  {% endif %}
+                </figure>
+                {% render_field form.caption name="message" cols="30" rows="10" placeholder="What is on your mind?" class="h100 bor-0 w-100 rounded-xxl p-2 ps-5 font-xssss text-grey-900 fw-500 border-light-md theme-dark-bg" %}
+              </div>
+              <div class="card-body d-flex p-0 mt-0">
+                <label for="content">
+                <a
+                  class="d-flex align-items-center font-xssss fw-600 ls-1 text-grey-700 text-dark pe-4"
+                  ><i class="font-md text-success feather-image me-2"></i
+                  ><span class="d-none-xs">Photo/Video</span></a
+                >
+                </label>
+                <input style="display: none;" type="file" name="content" multiple="content" class="content" id="content">
+                <div style="margin-right: 30px;">
+                  {% render_field form.tags rows="10" placeholder="Comma separated tags" class="bor-0 font-xssss text-grey-900 fw-500 border-light-md theme-dark-bg" %}
+                </div>
+
+              </div>
+              <br>
+              <div class="card-body p-0">
+                <button
+                  type="submit"
+                  style="
+                    background-color: transparent;
+                    background-repeat: no-repeat;
+                    border: none;
+                    cursor: pointer;
+                    overflow: hidden;
+                    outline: none;
+                  "
+                  class="font-xssss fw-600 text-grey-500 card-body p-0 d-flex align-items-center"
+                >
+                  <i
+                    class="btn-round-sm font-xs text-primary feather-edit-3 me-2 bg-greylight"
+                  ></i>
+                  Create Post
+                </button>
+              </div>
+            </div>
+          </form>
+
+          {% for post_item in post_items %}
+          <div class="card w-100 shadow-xss rounded-xxl border-0 p-4 mb-3">
+            <div class="card-body p-0 d-flex">
+              <figure class="avatar me-3">
+                {% if post_item.user.profile.picture %}
+                <img
+                  src="{{post_item.user.profile.picture.url}}"
+                  alt="image"
+                  class="shadow-sm rounded-circle w45"
+                />
+                {% else %}
+                <img
+                  src="{% static 'images/profile-4.png' %}"
+                  alt="image"
+                  class="shadow-sm rounded-circle w45"
+                />
+                {% endif %}
+              </figure>
+              <h4 class="fw-700 text-grey-900 font-xssss mt-1">
+                {{post_item.user.profile.first_name}}
+                {{post_item.user.profile.last_name}}
+                <span class="text-grey-500">@{{post_item.user.username}}</span>
+
+                <span class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">
+                  {{post_item.posted|timesince}} ago
+                </span>
+              </h4>
+            </div>
+            <div class="card-body p-0 me-lg-5">
+              <p class="fw-500 text-grey-900 lh-26 font-xssss w-100">
+                {{post_item.caption}} 
+                {% if tag %} {% for tag in post_item.tags.all %}
+                <a
+                  href="{{tag.get_absolute_url}}"
+                  class="fw-500 text-primary ms-2"
+                >
+                  #{{tag}}
+                </a>
+                {% endfor %} {% endif %}
+                <!-- <a href="#" class="fw-600 text-primary ms-2">See more</a> -->
+              </p>
+            </div>
+            <div class="card-body d-block p-0">
+              <div class="row ps-2 pe-2">
+                {% for cont in post_item.content.all %} 
+                {% if cont.file.name|slice:"-3:" == 'jpg' or cont.file.name|slice:"-3:" == 'png' %} 
+                {% if post_item.content.all.count == 1 %}
+                <div class="col-sm-12 p-1">
+                  <a 
+                    href="{{cont.file.url}}" 
+                    data-lightbox="roadtrip"
+                    target="_blank" 
+                    rel="nofollow"
+                  >
+                    <img
+                      style="height: 300px; width: 100%; object-fit: cover;"
+                      src="{{cont.file.url}}"
+                      class="rounded-3 w-100"
+                      alt="image"
+                    />
+                  </a>
+                </div>
+                {% endif %} {% if post_item.content.all.count == 2 %}
+                <div class="col-xs-6 col-sm-6 p-1">
+                  <a 
+                    href="{{cont.file.url}}" 
+                    data-lightbox="roadtrip"
+                    target="_blank" 
+                    rel="nofollow"
+                  >
+                    <img
+                      style="height: 200px; width: 100%; object-fit: cover;"
+                      src="{{cont.file.url}}"
+                      class="rounded-3 w-100"
+                      alt="image"
+                    />
+                  </a>
+                </div>
+                {% endif %} {% if post_item.content.all.count == 3 %}
+                <div class="col-xs-4 col-sm-4 p-1">
+                  <a
+                    href="{{cont.file.url}}"
+                    data-lightbox="roadtrip"
+                    target="_blank"
+                    rel="nofollow"
+                  >
+                    <img
+                      style="height: 150px; width: 100%; object-fit: cover;"
+                      src="{{cont.file.url}}"
+                      class="rounded-3 w-100"
+                      alt="image"
+                    />
+                  </a>
+                </div>
+                {% endif %} {% if post_item.content.all.count > 3 %} 
+                {% if forloop.counter == 1 %}
+                <div class="col-xs-4 col-sm-4 p-1">
+                  <a 
+                    href="{{cont.file.url}}" 
+                    data-lightbox="roadtrip"
+                    target="_blank" 
+                    rel="nofollow"
+                  >
+                    <img
+                      style="height: 150px; width: 100%; object-fit: cover;"
+                      src="{{cont.file.url}}"
+                      class="rounded-3 w-100"
+                      alt="image"
+                    />
+                  </a>
+                </div>
+                {% endif %} {% if forloop.counter == 2 %}
+                <div class="col-xs-4 col-sm-4 p-1">
+                  <a 
+                    href="{{cont.file.url}}" 
+                    data-lightbox="roadtrip"
+                    target="_blank" 
+                    rel="nofollow"
+                  >
+                    <img
+                      style="height: 150px; width: 100%; object-fit: cover;"
+                      src="{{cont.file.url}}"
+                      class="rounded-3 w-100"
+                      alt="image"
+                    />
+                  </a>
+                </div>
+                {% endif %} {% if forloop.counter == 3 %}
+                <div class="col-xs-4 col-sm-4 p-1">
+                  <a
+                    href="{% url 'postcomment' post_item.id %}"
+                    data-lightbox="roadtrip"
+                    class="position-relative d-block"
+                  >
+                    <img
+                      style="height: 150px; width: 100%; object-fit: cover;"
+                      src="{{cont.file.url}}"
+                      class="rounded-3 w-100"
+                      alt="image"
+                    />
+                    <span class="img-count font-sm text-white ls-3 fw-600">
+                        <b>+{{post_item.content.all.count|add:"-3"}}</b>
+                    </span>
+                  </a>
+                </div>
+                {% endif %} {% endif %} {% else %}
+                {% if forloop.counter <= 1 %}
+                <div>
+                <video
+                  id="my-video4"
+                  controls
+                  preload="auto"
+                  data-setup="{}"
+                  fullscreen=""
+                  style="width: 100%; height: 300px; object-fit: cover;"
+                >
+                  <source src="{{cont.file.url}}#t=0.5" type="video/mp4" />
+                </video>
+                </div>
+                {% endif %} {% endif %} {% endfor %}
+              </div>
+            </div>
+            <div class="card-body d-flex p-0 mt-3">
+              <form action="{% url 'like_post' %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="post_id" value="{{post_item.id}}">
+                {% if user not in post_item.likes.all %}
+                <button style="background-color: transparent;
+                  background-repeat: no-repeat;
+                  border: none;
+                  cursor: pointer;
+                  height: 50px;
+                  overflow: hidden;
+                  outline: none;" type="submit">
+                  <a
+                  class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2"
+                  >
+                    <i
+                      class="feather-thumbs-up me-1 btn-round-xs font-xss"
+                      style="width: 20px;"
+                    ></i>
+                    {{post_item.likes.all.count}} Like{{post_item.likes.all.count|pluralize}}
+                  </a>
+                </button>
+                {% else %}
+                <button style="background-color: transparent;
+                  background-repeat: no-repeat;
+                  border: none;
+                  cursor: pointer;
+                  height: 50px;
+                  overflow: hidden;
+                  outline: none;" type="submit">
+                  <a
+                  class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2"
+                  >
+                  <i
+                    class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"
+                  ></i>
+                  {{post_item.likes.all.count}} Like{{post_item.likes.all.count|pluralize}}
+                  </a>
+                </button>
+                {% endif %}
+              </form>
+              <a
+                href="{% url 'postcomment' post_item.id %}"
+                class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"
+              >
+                <i
+                  class="feather-message-circle text-dark text-grey-900 btn-round-sm font-lg"
+                ></i>
+                {% with comments.count as total_comments %}
+                <span>
+                  {{total_comments}} Comment{{total_comments|pluralize}}
+                </span>
+                {% endwith %}
+              </a>
+              <a
+                href="#"
+                id="dropdownMenu21"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                class="ms-auto d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"
+              >
+                <i
+                  class="feather-share-2 text-grey-900 text-dark btn-round-sm font-lg"
+                ></i>
+                <span class="d-none-xs">Share</span>
+              </a>
+              <div
+                class="dropdown-menu dropdown-menu-end p-4 rounded-xxl border-0 shadow-lg"
+                aria-labelledby="dropdownMenu21"
+              >
+                <h4
+                  class="fw-700 font-xss text-grey-900 d-flex align-items-center"
+                >
+                  Share
+                  <i
+                    class="feather-x ms-auto font-xssss btn-round-xs bg-greylight text-grey-900 me-2"
+                  ></i>
+                </h4>
+                <div class="card-body p-0 d-flex">
+                  <ul
+                    class="d-flex align-items-center justify-content-between mt-2"
+                  >
+                    <li class="me-1">
+                      <a href="#" class="btn-round-lg bg-facebook">
+                        <i class="font-xs ti-facebook text-white"></i>
+                      </a>
+                    </li>
+                    <li class="me-1">
+                      <a href="#" class="btn-round-lg bg-twiiter">
+                        <i class="font-xs ti-twitter-alt text-white"></i>
+                      </a>
+                    </li>
+                    <li class="me-1">
+                      <a href="#" class="btn-round-lg bg-linkedin">
+                        <i class="font-xs ti-linkedin text-white"></i>
+                      </a>
+                    </li>
+                    <li class="me-1">
+                      <a href="#" class="btn-round-lg bg-instagram">
+                        <i class="font-xs ti-instagram text-white"></i>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" class="btn-round-lg bg-pinterest">
+                        <i class="font-xs ti-pinterest text-white"></i>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="card-body p-0 d-flex">
+                  <ul
+                    class="d-flex align-items-center justify-content-between mt-2"
+                  >
+                    <li class="me-1">
+                      <a href="#" class="btn-round-lg bg-tumblr">
+                        <i class="font-xs ti-tumblr text-white"></i>
+                      </a>
+                    </li>
+                    <li class="me-1">
+                      <a href="#" class="btn-round-lg bg-youtube">
+                        <i class="font-xs ti-youtube text-white"></i>
+                      </a>
+                    </li>
+                    <li class="me-1">
+                      <a href="#" class="btn-round-lg bg-flicker">
+                        <i class="font-xs ti-flickr text-white"></i>
+                      </a>
+                    </li>
+                    <li class="me-1">
+                      <a href="#" class="btn-round-lg bg-black">
+                        <i class="font-xs ti-vimeo-alt text-white"></i>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" class="btn-round-lg bg-whatsup">
+                        <i class="font-xs feather-phone text-white"></i>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <h4
+                  class="fw-700 font-xssss mt-4 text-grey-500 d-flex align-items-center mb-3"
+                >
+                  Copy Link
+                </h4>
+                <i
+                  class="feather-copy position-absolute right-35 mt-3 font-xs text-grey-500"
+                ></i>
+                <input
+                  type="text"
+                  value="https://socia.be/1rGxjoJKVF0"
+                  class="bg-grey text-grey-500 font-xssss border-0 lh-32 p-2 font-xssss fw-600 rounded-3 w-100 theme-dark-bg"
+                />
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+
+          <div
+            class="card w-100 text-center shadow-xss rounded-xxl border-0 p-4 mb-3 mt-3"
+          >
+            <div class="snippet mt-2 ms-auto me-auto" data-title=".dot-typing">
+              <div class="stage">
+                <div class="dot-typing"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-4 col-xxl-3 col-lg-4 ps-lg-0" >
+          <div class="card w-60 shadow-xss rounded-xxl border-0 p-0" style="position: fixed; float: right;">
+            <div class="card-body d-flex align-items-center p-4 mb-0">
+              <h4 class="fw-700 mb-0 font-xssss text-grey-900">
+                Suggested
+              </h4>
+              <!-- <a
+                href="default-member.html"
+                class="fw-600 ms-auto font-xssss text-primary"
+              >
+                See all
+              </a> -->
+            </div>
+            <div
+              class="card-body bg-transparent-card d-flex p-3 bg-greylight ms-3 me-3 rounded-3"
+            >
+              <figure class="avatar me-2 mb-0">
+                <img
+                  src="{% static 'images/user-7.png' %}"
+                  alt="image"
+                  class="shadow-sm rounded-circle w45"
+                />
+              </figure>
+              <h4 class="fw-700 text-grey-900 font-xssss mt-2">
+                Anthony Daugloi
+                <span class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">
+                  12 mutual friends
+                </span>
+              </h4>
+            </div>
+            <div
+              class="card-body bg-transparent-card d-flex p-3 bg-greylight m-3 rounded-3"
+              style="margin-bottom: 0 !important;"
+            >
+              <figure class="avatar me-2 mb-0">
+                <img
+                  src="{% static 'images/user-8.png' %}"
+                  alt="image"
+                  class="shadow-sm rounded-circle w45"
+                />
+              </figure>
+              <h4 class="fw-700 text-grey-900 font-xssss mt-2">
+                David Agfree
+                <span class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">
+                  12 mutual friends
+                </span>
+              </h4>
+            </div>
+            <div
+              class="card-body bg-transparent-card d-flex p-3 bg-greylight m-3 rounded-3"
+            >
+              <figure class="avatar me-2 mb-0">
+                <img
+                  src="{% static 'images/user-12.png' %}"
+                  alt="image"
+                  class="shadow-sm rounded-circle w45"
+                />
+              </figure>
+              <h4 class="fw-700 text-grey-900 font-xssss mt-2">
+                Hugury Daugloi
+                <span class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">
+                  12 mutual friends
+                </span>
+              </h4>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<!-- main content -->
+
+<div
+  class="modal bottom side fade"
+  id="Modalstory"
+  tabindex="-1"
+  role="dialog"
+  style="overflow-y: auto"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content border-0 bg-transparent">
+      <button
+        type="button"
+        class="close mt-0 position-absolute top--30 right--10"
+        data-dismiss="modal"
+        aria-label="Close"
+      >
+        <i class="ti-close text-grey-900 font-xssss"></i>
+      </button>
+      <div class="modal-body p-0">
+        <div
+          class="card w-100 border-0 rounded-3 overflow-hidden bg-gradiant-bottom bg-gradiant-top"
+        >
+          <div
+            class="owl-carousel owl-theme dot-style3 story-slider owl-dot-nav nav-none"
+          >
+            {% for story in stories %} {% for story in story.story.all %}
+            <div class="item">
+              <img style="object-fit: cover; height: 500px;" src="{{story.content.url}}" alt="image" />
+            </div>
+            {% endfor %}{% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

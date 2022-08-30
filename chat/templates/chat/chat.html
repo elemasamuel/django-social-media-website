@@ -1,0 +1,82 @@
+{% extends 'account/base.html' %}  {% load static %} {% load widget_tweaks %}
+
+{% block content %}
+      {% include 'account/nav-bar.html' %}
+
+      <!-- main content -->
+      <div class="main-content right-chat-active">
+        <div class="middle-sidebar-bottom">
+          <div
+            class="middle-sidebar-left pe-0 ps-lg-3 ms-0 me-0"
+            style="max-width: 100%"
+          >
+            <div class="row">
+              <div class="col-lg-12">
+                <div
+                  class="chat-wrapper p-3 w-100 position-relative scroll-bar bg-white theme-dark-bg"
+                >
+                  <ul class="email-message">
+                    {% for message in messages %}
+                    <li>
+                      <a
+                        href="{% url 'directs' message.user.username %}"
+                        class="rounded-3 {% if message.unread %}bg-lightblue{% endif %} theme-light-bg"
+                      >
+                        <div class="form-check mt-1">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="blankCheckbox1"
+                            value="option1"
+                            aria-label=""
+                          />
+                          <label
+                            class="text-grey-500 font-xssss"
+                            for="blankCheckbox1"
+                          ></label>
+                        </div>
+                        
+                        <div class="email-user">
+                          <div>
+                          
+                      </div>
+                          {% if message.user.profile.picture %}
+                          <img
+                            src="{{message.user.profile.picture.url}}"
+                            alt="user"
+                            class="w35 me-2"
+                          />
+                          {% else %}
+                          <img
+                            src="{% static 'images/profile-4.png' %}"
+                            alt="user"
+                            class="w35 me-2"
+                          />
+                          {% endif %}
+                          <h6
+                            class="font-xssss text-grey-900 text-grey-900 mb-0 mt-0 fw-700"
+                          >
+                          {{message.user.profile.first_name}} {{message.user.profile.last_name}}
+                          </h6>
+                        </div>
+                        <span class="email-file"> </span>
+                        <div class="email-time text-grey-500 fw-600">
+                          {% if message.unread %}
+                          <span
+                            class="badge badge-primary text-white badge-pill fw-500 mt-0"
+                            >{{message.unread}}</span
+                          >{% endif %}
+                        </div>
+                      </a>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- main content -->
+
+{% endblock %}
