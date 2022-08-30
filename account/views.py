@@ -122,6 +122,7 @@ def profile(request, username):
     }
     return render(request, "account/profile.html", context)
 
+# Password Change
 @login_required
 def passwordChange(request):
 	user = request.user
