@@ -51,19 +51,4 @@ You can install the Prerequisites by running the command:
 pip install -r requirements.txt
 ```
 
-```
-celery==4.4.7
-Django==4.0.5
-django-celery-beat==2.0.0
-django-filter==22.1
-django-js-asset==2.0.0
-django-mptt==0.13.4
-django-timezone-field==4.2.3
-django-widget-tweaks==1.4.12
-djangorestframework==3.13.1
-Pillow==9.1.1
-python-crontab==2.6.0
-python-dateutil==2.8.2
-pytz==2022.1
-sqlparse==0.4.2
-```
+
