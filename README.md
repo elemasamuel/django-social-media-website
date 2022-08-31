@@ -20,6 +20,11 @@ Basic Instagram clone website built in django web framework using Python.
   
   ![Screenshot (45)](https://user-images.githubusercontent.com/99813035/187665507-101c8411-ee9f-4d4a-ba81-25570419f4e6.png)
   
+* Following, Unfollowing and Sending Direct Messages to a User
+
+  ![Screenshot (67)](https://user-images.githubusercontent.com/99813035/187705084-55305220-99f6-4947-a162-240e97e581c8.png)
+
+  
 * A Working Notification System
   
   ![Screenshot (47)](https://user-images.githubusercontent.com/99813035/187666077-e10245f8-dfde-47fb-95ff-6e58bd8ce471.png)
