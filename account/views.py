@@ -34,33 +34,18 @@ from rest_framework.permissions import IsAuthenticated
 
 # Register
 def registerPage(request):
-    form = CreateUserForm()
-    if request.user.is_authenticated:
-        return redirect("/")
+    if request.method == "POST":
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            email = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password')
+            User.objects.create_user(username=username, email=email, password=password)
+            return redirect('/')
+
     else:
-        if request.method == "POST":
-            form = CreateUserForm(request.POST)
-            if form.is_valid():
-                user = form.save()
-
-                username = form.cleaned_data.get("username")
-                email = form.cleaned_data.get("email")
-                first_name = form.cleaned_data.get("first_name")
-                last_name = form.cleaned_data.get("last_name")
-                
-                Follow.objects.create(follower=user, following=user)
-                group = Group.objects.get(name="customer")
-                user.groups.add(group)
-                Profile.objects.create(
-                    user=user,
-                    email=email,
-                    first_name=first_name,
-                    last_name=last_name,
-                )
-
-                messages.info(request, "Account Created Successfully!")
-                return redirect("login")
-        return render(request, "account/register.html", {"form": form})
+        form = CreateUserForm()
+    return render(request, "account/register.html", {"form": form})
 
 # Login
 def loginPage(request):
