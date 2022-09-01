@@ -192,14 +192,13 @@
             <div class="card-body p-0 me-lg-5">
               <p class="fw-500 text-grey-900 lh-26 font-xssss w-100">
                 {{post_item.caption}} 
-                {% if tag %} {% for tag in post_item.tags.all %}
+                {% for tag in post_item.tags.all %}
                 <a
-                  href="{{tag.get_absolute_url}}"
+                  href="tag/{{tag.slug}}"
                   class="fw-500 text-primary ms-2"
-                >
-                  #{{tag}}
+                >{{tag}}
                 </a>
-                {% endfor %} {% endif %}
+                {% endfor %} 
                 <!-- <a href="#" class="fw-600 text-primary ms-2">See more</a> -->
               </p>
             </div>
