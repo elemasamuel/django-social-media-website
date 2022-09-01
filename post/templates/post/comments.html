@@ -7,8 +7,6 @@
     <div class="middle-sidebar-bottom">
       <div class="middle-sidebar-left">
 
-        
-                
                 <div
                   class="card w-100 shadow-xss rounded-xxl border-0 p-4 mb-3"
                 >
@@ -85,9 +83,9 @@
                   <div class="card-body p-0 me-lg-5">
                     <p class="fw-500 text-grey-900 lh-26 font-xssss w-100">
                       {{post.caption}} 
-                      {% if tag %} {% for tag in post.tags.all %}
-                      <a href="{{tag.get_absolute_url}}" class="fw-500 text-primary ms-2">#{{tag}}</a>
-                      {% endfor %} {% endif %}
+                      {% for tag in post.tags.all %}
+                      <a href="tag/{{tag.slug}}" class="fw-500 text-primary ms-2">{{tag}}</a>
+                      {% endfor %}
                       <!-- <a href="#" class="fw-600 text-primary ms-2">See more</a> -->
                     </p>
                   </div>
