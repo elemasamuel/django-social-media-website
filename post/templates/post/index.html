@@ -206,7 +206,7 @@
             <div class="card-body d-block p-0">
               <div class="row ps-2 pe-2">
                 {% for cont in post_item.content.all %} 
-                {% if cont.file.name|slice:"-3:" == 'jpg' or cont.file.name|slice:"-3:" == 'png' %} 
+                {% if cont.file.name|slice:"-3:" == 'jpg' or cont.file.name|slice:"-3:" == 'png' or cont.file.name|slice:"-4:" == 'jpeg' %} 
                 {% if post_item.content.all.count == 1 %}
                 <div class="col-sm-12 p-1">
                   <a 
