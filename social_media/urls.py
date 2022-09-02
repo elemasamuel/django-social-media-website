@@ -22,7 +22,7 @@ from django.conf.urls.static import static
 # Account Imports
 from account.views import newConversation, profile, follow, GenericViewSet, ProfileViewAPI
 
-from post.views import ListStream
+from post.views import ListStream, tags_api
 
 # Django Rest Framwork Imports
 from rest_framework import routers
@@ -34,15 +34,20 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/', include('account.urls')),
     path('', include('post.urls')),
+
     path('chat/', include('chat.urls')),
     path('notifications/', include('notifications.urls')),
+
     path('<username>/', profile, name='profile'),
     path('<username>/new-conversation', newConversation, name='new-conversation'),
     path('<username>/saved', profile, name='profilefavorites'),
     path('<username>/follow/<option>', follow, name='follow'),
+
+    # Django REST Framework
     path('api/', include(router.urls)),
     path('api/getstreams/<int:pk>', ListStream.as_view(), name='api-list-streams'),
     path('api/getprofile/<int:pk>', ProfileViewAPI.as_view(), name='api-get-profile'),
+    path('api/tags', tags_api, name='api-tags'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
