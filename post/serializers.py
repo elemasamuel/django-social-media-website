@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from post.models import Stream
+from post.models import Stream, Tag
 
 class StreamSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField()
@@ -14,3 +14,8 @@ class StreamSerializer(serializers.ModelSerializer):
         model = Stream
         fields = '__all__'
         depth = 1
+
+class TagsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        exclude = ['slug']
