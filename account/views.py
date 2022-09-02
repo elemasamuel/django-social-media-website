@@ -23,7 +23,7 @@ from chat.models import Message
 # Post Imports
 from post.models import Follow, Post, Stream
 
-# Django Rest Framwork Imports
+# Django REST Framwork Imports
 from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework.views import APIView
@@ -37,10 +37,14 @@ def registerPage(request):
     if request.method == "POST":
         form = CreateUserForm(request.POST)
         if form.is_valid():
+            user = form.save()
             username = form.cleaned_data.get('username')
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password')
-            User.objects.create_user(username=username, email=email, password=password)
+            first_name = form.cleaned_data.get('first_name')
+            last_name = form.cleaned_data.get('last_name')
+            Profile.objects.create(user=user, email=email, password=password, first_name=first_name, last_name=last_name)
+            Follow.objects.create(follower=user, following=user)
             return redirect('/')
 
     else:
@@ -106,7 +110,6 @@ def profile(request, username):
     }
     return render(request, "account/profile.html", context)
 
-# Password Change
 @login_required
 def passwordChange(request):
 	user = request.user
@@ -247,13 +250,16 @@ def newConversation(request, username):
 
     return redirect("../chat/directs/" + username)
 
-#
+
+# Django REST Framework
+
+# Users API
 class GenericViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-#
+# Profile API
 class ProfileViewAPI(APIView):
     # Get all the Stream posts from the User
     permission_classes = [IsAuthenticated]
