@@ -7,7 +7,7 @@ from django.http import JsonResponse
 
 from post.models import Post, PostFileContent, Stream, Tag, Like, Story, StoryStream
 from post.forms import NewPostForm, NewCommentForm, NewStoryForm
-from post.serializers import StreamSerializer
+from post.serializers import StreamSerializer, TagsSerializer
 
 from account.models import Profile
 
@@ -15,12 +15,18 @@ from chat.models import Message
 
 from notifications.models import Notification
 
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.authentication import TokenAuthentication, BasicAuthentication
+from rest_framework.authtoken.models import Token
+from rest_framework.pagination import PageNumberPagination
 
 # Create your views here.
 
+# HomePage
 @login_required(login_url="login")
 def index(request):
     #
@@ -116,7 +122,7 @@ def index(request):
 
     return HttpResponse(template.render(context, request))
 
-
+# HashTags
 @login_required(login_url="login")
 def tags(request, tag_slug):
     tag = get_object_or_404(Tag, slug=tag_slug)
@@ -131,7 +137,7 @@ def tags(request, tag_slug):
 
     return HttpResponse(template.render(context, request))
 
-
+# Comments on Post
 @login_required(login_url="login")
 def comment(request, post_id):
     # comments
@@ -171,7 +177,7 @@ def comment(request, post_id):
 
     return HttpResponse(template.render(context, request))
 
-
+# Like Post
 @login_required(login_url='login')
 def like_post(request):
     user = request.user
@@ -195,6 +201,7 @@ def like_post(request):
         like.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
+# Bookmark Post
 @login_required(login_url="login")
 def favorite(request, post_id):
     user = request.user
@@ -209,6 +216,7 @@ def favorite(request, post_id):
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
+# Story
 def showMedia(request, stream_id):
     stories = StoryStream.objects.get(id=stream_id)
     media_st = stories.story.all().values()
@@ -217,9 +225,21 @@ def showMedia(request, stream_id):
 
     return JsonResponse(stories_list, safe=False)
 
+# Django REST Framework
+
+class ResponsePagination(PageNumberPagination):
+    page_query_param = 'p'
+    page_size = 5
+    page_size_query_param = 'page_size'
+    max_page_size = 3
+
+# Stream API
 class ListStream(APIView):
     # Get all the Stream posts from the User
     permission_classes = [IsAuthenticated]
+    """
+    authentication_classes = [TokenAuthentication]
+    """
 
     def get_object(self, pk):
         try:
@@ -230,6 +250,32 @@ class ListStream(APIView):
     def get(self, request, pk, format=None):
         user = self.get_object(pk)
         posts = Stream.objects.filter(user=user)
-        serializer = StreamSerializer(posts, many=True, context={'request': request})
-        return Response(serializer.data)
 
+        # For Pagination
+        paginator = ResponsePagination()
+        results = paginator.paginate_queryset(posts, request)
+
+        serializer = StreamSerializer(results, many=True, context={'request': request})
+        return paginator.get_paginated_response(serializer.data)
+
+# Tags API
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def tags_api(request):
+    if request.method == 'GET':
+        tags = Tag.objects.all()
+
+        '''
+        # Create Token
+        for user in User.objects.all():
+            Token.objects.get_or_create(user=user)
+            print("Token for " + user.username + ' ' + str(Token.objects.get(user=user)))
+        '''
+
+        serializer = TagsSerializer(tags, many=True)
+        return Response(serializer.data)
+    elif request.method == 'POST':
+        serializer = TagsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
