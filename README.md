@@ -1,5 +1,5 @@
 # Social Media Website (Instagram Clone)
-Basic Instagram clone website built in django web framework using Python.
+Basic Instagram clone website built in Django Web Framework using Python.
 
 ## Features
 * Secure Signup/Login Page
