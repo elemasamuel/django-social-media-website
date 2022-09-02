@@ -44,7 +44,12 @@ Basic Instagram clone website built in django web framework using Python.
   ![Screenshot (61)](https://user-images.githubusercontent.com/99813035/187669054-5be90d7b-8cd9-4135-a8d6-b1e9017f974e.png)
   ![Screenshot (63)](https://user-images.githubusercontent.com/99813035/187669061-99db96e4-262d-4e75-a487-4001d2fe32be.png)
 
+* Django REST Framework
 
+  ![Screenshot (72)](https://user-images.githubusercontent.com/99813035/188035865-b07e11b7-2d1d-45b5-b41d-0a5eed88bcce.png)
+  ![Screenshot (73)](https://user-images.githubusercontent.com/99813035/188035870-3928d3e9-b51e-4542-b652-b31164a0ef1b.png)
+  ![Screenshot (74)](https://user-images.githubusercontent.com/99813035/188035872-b468f824-7a10-45e1-b8c7-61eb068c5014.png)
+  ![Screenshot (75)](https://user-images.githubusercontent.com/99813035/188035874-1f2bd419-db96-4bbc-a657-079087afba57.png)
 
 # Prerequisites
 You can install the Prerequisites by running the command:
